@@ -25,11 +25,11 @@
 
    firebase.initializeApp(config);
 
-     Get a reference to the database service
-     var database = firebase.database();
-     var connectedRef = firebase.database().ref(".info/connected");
+     // Get a reference to the database service
+   var database = firebase.database();
+   var connectedRef = firebase.database().ref(".info/connected");
 
-     connectedRef.on("value", (snap) => {
+   connectedRef.on("value", (snap) => {
      if (snap.val() === true) {
        connections++;
        console.log('Connected: %s connections', connections);
