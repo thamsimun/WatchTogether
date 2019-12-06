@@ -62,6 +62,7 @@ function play() {
     }
 }
 
+//when user clicks play, set play to true in database and set pause to false in database
 function justPlay() {
     firebase.database().ref('Play').set('True');
     firebase.database().ref('Pause').set('False');
@@ -71,6 +72,7 @@ function justPlay() {
     console.log("hi");
 }
 
+//when user clicks pause, set pause to true in database and set play to false in database
 function justPause() {
     firebase.database().ref('Pause').set("True");
     firebase.database().ref('Play').set('False');
@@ -78,7 +80,7 @@ function justPause() {
     console.log("hihi")
 }
 
-
+//when user seek to new timing, set the seek time to the new timing in database
 function justSeek(currTime) {
     firebase.database().ref('SeekTime').set(currTime);
     var vidTime = player.getCurrentTime();
@@ -87,6 +89,51 @@ function justSeek(currTime) {
         player.playVideo();
     }
     console.log("hihihih");
+}
+
+//when user enter a new youtube link and clicks on the change video buttton, save the new video id in database
+function changeVideo() {
+    var videoURL = document.getElementById("inputVideoId").value;
+    console.log(videoURL);
+    var idParsed = idParse(videoURL);
+    if(idParsed !== "invalid") {
+        firebase.database().ref('VideoID').set(idParsed);
+        player.loadVideoById(idParsed);
+    } else {
+        invalidURL(idParsed);
+    }
+
+}
+
+//parse the url  user gave to a youtube embedded id for the api
+function idParse(url) {
+    if (url.includes("https://") || url.includes("http://") || url.includes(".com/")) {
+        // Do some string processing with regex
+        var myRegex;
+        var match;
+        if (url.includes("youtu.be")) {
+            myRegex = /.+youtu\.be\/([A-Za-z0-9\-_]+)/g;
+            match = myRegex.exec(url);
+            if (match != null) {
+                return match[1];
+            }
+        } else {
+            myRegex = /.+watch\?v=([A-Za-z0-9\-_]+)/g;
+            match = myRegex.exec(url);
+            if (match != null) {
+                return match[1];
+            }
+        }
+        url = "invalid"
+    }
+
+    return url;
+}
+
+//if user enter invalid youtube url, an invalid pop up alert will be shown
+function invalidURL(url) {
+    console.log(url);
+    window.alert("Invalid Youtube URL");
 }
 
 

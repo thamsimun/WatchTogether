@@ -8,6 +8,11 @@
   <!--        <iframe width="560" height="315" src="http://www.youtube.com/embed/eMygau1Yy_0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
 </div>
 
+<div>
+  <label for="inputVideoId"></label><input type="Video" style="max-width: 200px; margin-right: .5rem; margin-bottom: .5rem; float: left;" class="form-control" id="inputVideoId" placeholder="Video ID / URL">
+  <button id="changeButton" onclick="changeVideo()">Change Video</button>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
 <!--<script src="/__/firebase/7.5.0/firebase-app.js"></script>-->
 <!--<script src="/__/firebase/init.js"></script>-->
@@ -27,44 +32,60 @@
 
      // Get a reference to the database service
    var database = firebase.database();
-   var connectedRef = firebase.database().ref(".info/connected");
 
-   connectedRef.on("value", (snap) => {
-     if (snap.val() === true) {
-       connections++;
-       console.log('Connected: %s connections', connections);
-     } else {
-       connections--;
-       console.log('Disconnected: %s connections', connections);
-     }
-   });
+   // var connectedRef = firebase.database().ref(".info/connected");
+   //
+   // var connections = 0;
+   //
+   // connectedRef.on("value", (snap) => {
+   //   if (snap.val() === true) {
+   //     connections++;
+   //     console.log('Connected: %s connections', connections);
+   //   } else {
+   //     connections--;
+   //     console.log('Disconnected: %s connections', connections);
+   //   }
+   // });
 
-
+   //listen to any changes to the play data in the database
    var refPlay  = firebase.database().ref().child('Play');
    refPlay.on('value', snap => {
      console.log(snap.val());
      if(snap.val() === 'True') {
-         player.playVideo();
+       //call player to play video
+       player.playVideo();
      }
    });
 
+   //listen to any changes to the pause data in the database
    var refPause = firebase.database().ref().child('Pause');
    refPause.on('value', snap => {
      console.log(snap.val());
      if(snap.val() === 'True') {
+       //call player to pause video
        player.pauseVideo();
      }
    });
 
+   //listen to any changes to the seek time in the database
    var refSeekTime = firebase.database().ref().child('SeekTime');
    refSeekTime.on('value', snap => {
      console.log(snap.val());
      var vidTime = player.getCurrentTime();
      if (vidTime < snap.val() - 0.2 || vidTime > snap.val() + 0.2) {
+       //call player to seek to the new timing
        player.seekTo(snap.val());
        player.playVideo();
      }
    });
+
+   //listen to any changes to the video id in the database
+   var refVidId = firebase.database().ref().child('VideoID');
+   refVidId.on('value', snap => {
+     console.log(snap.val());
+     //call player to load the new video
+     player.loadVideoById(snap.val());
+   })
 
 </script>
 

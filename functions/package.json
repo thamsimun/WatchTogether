@@ -2,11 +2,11 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "lint": "eslint .",
-    "serve": "firebase serve --only functions",
+    "lint": "node_modules/.bin/eslint .",
+    "serve": "firebase serve --only ",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
+    "deploy": "firebase deploy --only ",
     "logs": "firebase functions:log"
   },
   "engines": {
